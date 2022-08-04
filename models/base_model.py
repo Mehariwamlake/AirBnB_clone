@@ -3,7 +3,7 @@
 This module defines BaseModel which is a base model for all
 AIRBNB project objects
 """
-import uuid
+from uuid import uuid4
 import models
 from datetime import datetime
 
@@ -19,7 +19,7 @@ class BaseModel:
         """
         Initialize a BaseModel object
         """
-        if len(kwargs) is not 0:
+        if len(kwargs) != 0:
             for key, value in kwargs.items():
                 if key in ["created_at", "updated_at"]:
                     value = datetime.strptime(value, datetime_format)
@@ -27,7 +27,7 @@ class BaseModel:
                 if key not in ["__class__"]:
                     setattr(self, key, value)
         else:
-            self.id = str(uuid.uuid4())
+            self.id = str(uuid4())
             self.created_at = self.updated_at = datetime.now()
             models.storage.new(self)
 
@@ -43,6 +43,7 @@ class BaseModel:
         Method that sets the time object was updated
         """
         self.updated_at = datetime.now()
+        models.storage.new(self)
         models.storage.save()
 
     def to_dict(self):
