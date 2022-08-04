@@ -1,24 +1,56 @@
 #!/usr/bin/python3
-""" Module for Base """
+"""
+This module defines BaseModel which is a base model for all
+AIRBNB project objects
+"""
 import uuid
-import datetime
 import models
+from datetime import datetime
 
-format_dt = "%Y-%m-%dT%H:%M:%S.%f"
+
+datetime_format = "%Y-%m-%dT%H:%M:%S.%f"
+
 
 class BaseModel:
-    """ Basemodel class """
+    """
+    Definition of the BaseModel class
+    """
     def __init__(self, *args, **kwargs):
-        """ Initialization of Database """
-        if args is not None and len(args) > 0:
-            pass
-        if kwargs:
-            for key, item in kwargs.items():
-                if key in ['created_at', 'updated_at']:
-                    item = datetime.strptime(item, format_dt)
-                if key not in ['__class__']:
-                    setattr(self, key, item)
+        """
+        Initialize a BaseModel object
+        """
+        if len(kwargs) is not 0:
+            for key, value in kwargs.items():
+                if key in ["created_at", "updated_at"]:
+                    value = datetime.strptime(value, datetime_format)
+
+                if key not in ["__class__"]:
+                    setattr(self, key, value)
         else:
             self.id = str(uuid.uuid4())
             self.created_at = self.updated_at = datetime.now()
             models.storage.new(self)
+
+    def __str__(self):
+        """
+        String representation of the BaseModel object
+        """
+        return "[{}] ({}) {}".format(self.__class__.__name__,
+                                     self.id, self.__dict__)
+
+    def save(self):
+        """
+        Method that sets the time object was updated
+        """
+        self.updated_at = datetime.now()
+        models.storage.save()
+
+    def to_dict(self):
+        """
+        Generates a dictionary representation of the object
+        """
+        dic = self.__dict__.copy()
+        dic["__class__"] = self.__class__.__name__
+        dic["created_at"] = self.created_at.isoformat()
+        dic["updated_at"] = self.updated_at.isoformat()
+        return dic
