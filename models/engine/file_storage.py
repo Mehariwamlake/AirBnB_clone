@@ -33,8 +33,8 @@ class FileStorage:
         """
         dics = dict(self.__objects)
         for k, v in dics.items():
-            if type(v) is not dict:
-                dics[k] = v.to_dict()
+            #if type(v) is not dict:
+            dics[k] = v.to_dict()
         save_to_json_file(dics, self.__file_path)
 
     def reload(self):
