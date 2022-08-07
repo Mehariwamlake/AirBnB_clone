@@ -1,14 +1,11 @@
-#!/usr/bin/python
-""" holds class Review"""
+#!/usr/bin/python3
+"""review module"""
+
 from models.base_model import BaseModel
 
 
 class Review(BaseModel):
-    """Representation of Review """
+    """Review class that inherits from BaseModel"""
     place_id = ""
     user_id = ""
     text = ""
-
-    def __init__(self, *args, **kwargs):
-        """initializes Review"""
-        super().__init__(*args, **kwargs)
