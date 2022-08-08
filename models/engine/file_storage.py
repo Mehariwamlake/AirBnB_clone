@@ -5,6 +5,15 @@ Module containing FileStorage object definition
 from .json_helpers.save_to_json_file import save_to_json_file
 import json
 from models.base_model import BaseModel
+from models.user import User
+from models.place import Place
+from models.state import State
+from models.city import City
+from models.amenity import Amenity
+from models.review import Review
+
+classes = {"BaseModel": BaseModel, "User": User, "Place": Place,
+           "State": State, "City": City, "Amenity": Amenity, "Review": Review}
 
 
 class FileStorage:
@@ -33,7 +42,6 @@ class FileStorage:
         """
         dics = dict(self.__objects)
         for k, v in dics.items():
-            #if type(v) is not dict:
             dics[k] = v.to_dict()
         save_to_json_file(dics, self.__file_path)
 
@@ -52,4 +60,5 @@ class FileStorage:
         except FileNotFoundError:
             objs = {}
         for k, v in objs.items():
-            self.__objects[k] = BaseModel(**v)
+            obj_classname = v["__class__"]
+            self.__objects[k] = classes[obj_classname](**v)
